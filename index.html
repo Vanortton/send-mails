@@ -7,69 +7,128 @@
             content="width=device-width, initial-scale=1.0"
         />
         <title>Enviar Email</title>
+        <link
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
     </head>
     <body>
-        <h1>Enviar Email pelo Outlook</h1>
-        <form id="emailForm">
-            <input
-                type="text"
-                id="recipient"
-                placeholder="Destinatário"
-                required
-            /><br />
-            <input
-                type="text"
-                id="subject"
-                placeholder="Assunto"
-                required
-            /><br />
-            <textarea
-                id="content"
-                placeholder="Conteúdo em HTML"
-                required
-            ></textarea
-            ><br />
-            <button type="submit">Enviar</button>
-        </form>
-        <h2>Gerar Rascunhos</h2>
-        <form id="draftForm">
-            <input
-                type="text"
-                id="draftRecipient"
-                placeholder="Para"
-            /><br />
-            <input
-                type="text"
-                id="draftCc"
-                placeholder="Cc"
-            /><br />
-            <input
-                type="text"
-                id="draftBcc"
-                placeholder="Cco"
-            /><br />
-            <input
-                type="text"
-                id="draftSubject"
-                placeholder="Assunto"
-            /><br />
-            <textarea
-                id="draftContent"
-                placeholder="Conteúdo em HTML"
-            ></textarea
-            ><br />
-            <input
-                type="number"
-                id="draftCount"
-                placeholder="Quantidade"
-                value="1"
-                min="1"
-                required
-            /><br />
-            <button type="submit">Gerar Rascunhos</button>
-        </form>
+        <div class="container mt-5">
+            <h1 class="mb-4">Enviar Email pelo Outlook</h1>
+            <form
+                id="emailForm"
+                class="mb-4"
+            >
+                <div class="form-group">
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="recipient"
+                        placeholder="Destinatário"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="subject"
+                        placeholder="Assunto"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <textarea
+                        class="form-control"
+                        id="content"
+                        placeholder="Conteúdo em HTML"
+                        required
+                    ></textarea>
+                </div>
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Enviar
+                </button>
+            </form>
+
+            <h2 class="mb-4">Gerar Rascunhos</h2>
+            <form id="draftForm">
+                <div class="form-group">
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="draftRecipient"
+                        placeholder="Para"
+                    />
+                </div>
+                <div class="form-group">
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="draftCc"
+                        placeholder="Cc"
+                    />
+                </div>
+                <div class="form-group">
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="draftBcc"
+                        placeholder="Cco"
+                    />
+                </div>
+                <div class="form-group">
+                    <input
+                        type="text"
+                        class="form-control"
+                        id="draftSubject"
+                        placeholder="Assunto"
+                    />
+                </div>
+                <div class="form-group">
+                    <textarea
+                        class="form-control"
+                        id="draftContent"
+                        placeholder="Conteúdo em HTML"
+                    ></textarea>
+                </div>
+                <div class="form-group">
+                    <input
+                        type="number"
+                        class="form-control"
+                        id="draftCount"
+                        placeholder="Quantidade"
+                        value="1"
+                        min="1"
+                        required
+                    />
+                </div>
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Gerar Rascunhos
+                </button>
+            </form>
+        </div>
+
+        <div
+            aria-live="polite"
+            aria-atomic="true"
+            style="position: relative"
+        >
+            <div
+                id="toastContainer"
+                style="position: fixed; top: 1rem; right: 1rem"
+            ></div>
+        </div>
 
         <script src="https://alcdn.msauth.net/browser/2.18.0/js/msal-browser.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
         <script>
             const msalConfig = {
                 auth: {
@@ -238,7 +297,7 @@
                 )
 
                 if (response.ok) {
-                    alert('Email enviado com sucesso!')
+                    showToast('Email enviado com sucesso!')
                 } else {
                     const error = await response.json()
                     console.error('Erro ao enviar email:', error)
@@ -305,7 +364,7 @@
                 )
 
                 if (response.ok) {
-                    alert('Rascunho criado com sucesso!')
+                    showToast('Rascunho criado com sucesso!')
                 } else {
                     const error = await response.json()
                     console.error('Erro ao criar rascunho:', error)
@@ -345,6 +404,32 @@
                         }
                     }
                 })
+
+            function showToast(message) {
+                const toastContainer = document.getElementById('toastContainer')
+                const toast = document.createElement('div')
+                toast.className = 'toast show'
+                toast.role = 'alert'
+                toast.ariaLive = 'assertive'
+                toast.ariaAtomic = 'true'
+                toast.innerHTML = `
+        <div class="toast-header">
+            <strong class="mr-auto">Notificação</strong>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body">
+            ${message}
+        </div>
+    `
+                toastContainer.appendChild(toast)
+
+                setTimeout(() => {
+                    $(toast).toast('dispose')
+                    toast.remove()
+                }, 5000)
+            }
         </script>
     </body>
 </html>
